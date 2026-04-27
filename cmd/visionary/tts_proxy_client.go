@@ -10,7 +10,13 @@ import (
 	"strings"
 )
 
-// proxyTTSClient implements synthesizer by calling a TTS proxy over HTTP.
+// synthesizer abstracts TTS backends.
+type synthesizer interface {
+	Synthesize(ctx context.Context, ssml string, rate float64) ([]byte, error)
+	Close() error
+}
+
+// proxyTTSClient implements synthesizer by calling the visionary server over HTTP.
 type proxyTTSClient struct {
 	baseURL string
 	token   string
@@ -49,13 +55,13 @@ func (p *proxyTTSClient) Synthesize(ctx context.Context, ssml string, rate float
 
 	resp, err := p.client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("proxy request: %w", err)
+		return nil, fmt.Errorf("server request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		msg, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("proxy returned %d: %s", resp.StatusCode, bytes.TrimSpace(msg))
+		return nil, fmt.Errorf("server returned %d: %s", resp.StatusCode, bytes.TrimSpace(msg))
 	}
 
 	return io.ReadAll(resp.Body)

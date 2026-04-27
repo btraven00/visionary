@@ -1,4 +1,4 @@
-module github.com/b/plsdescribe
+module github.com/b/visionary
 
 go 1.24.2
 

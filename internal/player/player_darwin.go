@@ -1,12 +1,11 @@
 //go:build darwin
 
-package main
+package player
 
 import "os/exec"
 
-// findPlayer returns the best available audio player on macOS.
-// afplay is built into macOS and handles MP3 natively.
-func findPlayer() (string, []string) {
+// FindPlayer returns the best available audio player on macOS.
+func FindPlayer() (string, []string) {
 	players := []struct {
 		name string
 		args []string

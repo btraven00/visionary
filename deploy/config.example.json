@@ -1,0 +1,20 @@
+{
+  "domain": "visionary.example.com",
+  "session_ttl": "2h",
+  "session_idle": "30m",
+  "cert_cache": "/var/cache/visionary/certs",
+  "gemini": {
+    "model": "gemini-2.5-pro"
+  },
+  "tts": {
+    "voice": "en-US-Wavenet-F",
+    "language": "en-US",
+    "speaking_rate": 2.0
+  },
+  "tokens": [
+    {
+      "token": "REPLACE_WITH_RANDOM_SECRET",
+      "label": "your-label"
+    }
+  ]
+}

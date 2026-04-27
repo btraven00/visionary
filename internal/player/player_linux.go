@@ -1,13 +1,11 @@
 //go:build linux
 
-package main
+package player
 
 import "os/exec"
 
-// findPlayer returns the best available audio player on Linux.
-// paplay (PulseAudio/PipeWire) and mpv are the most common; pw-play for
-// modern PipeWire-native setups. ffplay as a fallback.
-func findPlayer() (string, []string) {
+// FindPlayer returns the best available audio player on Linux.
+func FindPlayer() (string, []string) {
 	players := []struct {
 		name string
 		args []string
