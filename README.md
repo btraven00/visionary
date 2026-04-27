@@ -2,7 +2,7 @@
 
 Describe scientific plots using AI vision.
 
-Sends an image to Google Gemini, gets a text description back, and optionally speaks it aloud via Google Cloud TTS. Descriptions go to stdout so screen readers (VoiceOver, Orca) pick them up naturally.
+`visionary` is a client–server tool: the server holds API keys and handles Gemini vision and TTS; the client (`visionary`) is a small binary that sends images and receives descriptions. Descriptions go to stdout so screen readers (VoiceOver, Orca) pick them up naturally.
 
 ## Install
 
@@ -12,11 +12,21 @@ Grab a binary from [Releases](https://github.com/btraven00/plsdescribe/releases)
 go build -o plsdescribe .
 ```
 
+## Configuration
+
+Create `~/.visionaryrc` with your server details:
+
+```
+server   = https://your-visionary-server.example.com
+token    = your-bearer-token
+tts_rate = 1.5   # optional, 0.25–2.0 (default 2.0)
+```
+
+These can also be passed as flags (`-server`, `-token`, `-tts-rate`) or env vars (`VISIONARY_SERVER`, `VISIONARY_TOKEN`).
+
 ## Usage
 
 ```
-export GEMINI_API_KEY=your-key
-
 plsdescribe -f plot.png                 # concise one-sentence description
 plsdescribe -f plot.png -v              # detailed bullet points
 plsdescribe -f plot.png -i              # interactive session
@@ -51,18 +61,9 @@ Commands: `/tts` (speak last response), `/save [file]` (save to file), `/quit`, 
 | `-o` | Output file (default: `description.txt`) |
 | `-tts` | Speak via Google Cloud TTS |
 
-## TTS setup
+## TTS
 
-TTS requires Google Cloud credentials with the Text-to-Speech API enabled:
-
-```
-gcloud auth application-default login
-gcloud auth application-default set-quota-project your-project-id
-```
-
-Or set `GOOGLE_CLOUD_PROJECT` to your GCP project ID.
-
-Audio plays through `mpv`, `ffplay`, `afplay` (macOS), or `pw-play`/`paplay` (Linux) — whichever is found first. If none are available, the MP3 is saved to `description.mp3`.
+TTS is handled server-side; no local GCP credentials needed. Audio plays through `mpv`, `ffplay`, `afplay` (macOS), or `pw-play`/`paplay` (Linux) — whichever is found first. If none are available, the MP3 is saved to `description.mp3`.
 
 ## R package
 
