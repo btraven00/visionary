@@ -6,11 +6,7 @@ Describe scientific plots using AI vision.
 
 ## Install
 
-Grab a binary from [Releases](https://github.com/btraven00/plsdescribe/releases), or build from source:
-
-```
-go build -o plsdescribe .
-```
+Download a binary from [Releases](https://github.com/btraven00/visionary/releases).
 
 ## Configuration
 
@@ -70,7 +66,7 @@ TTS is handled server-side; no local GCP credentials needed. Audio plays through
 Install directly from GitHub:
 
 ```r
-devtools::install_github("btraven00/plsdescribe")
+devtools::install_github("btraven00/visionary")
 ```
 
 The binary is downloaded automatically on first use (with a confirmation prompt).
@@ -94,8 +90,6 @@ describe_plot(
 describe_image("umap.png", tts = TRUE)
 describe_plot(plot(1:10), tts = TRUE)
 ```
-
-`GEMINI_API_KEY` must be set in your environment. For TTS, Google Cloud credentials are also needed.
 
 ## Screen reader compatibility
 
