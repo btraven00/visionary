@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/b/visionary/internal/config"
+	"github.com/b/visionary/internal/figextract"
 	"github.com/b/visionary/internal/gemini"
 	"github.com/b/visionary/internal/session"
 	"github.com/b/visionary/internal/tts"
@@ -205,6 +206,44 @@ func main() {
 		label := c.Get("token_label").(string)
 		store.Delete(c.Param("id"), label)
 		return c.NoContent(http.StatusNoContent)
+	})
+
+	v1.POST("/figures", func(c echo.Context) error {
+		if err := c.Request().ParseMultipartForm(50 << 20); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "invalid multipart form")
+		}
+
+		pdfFile, _, err := c.Request().FormFile("pdf")
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "pdf file required")
+		}
+		defer pdfFile.Close()
+		pdfBytes, err := io.ReadAll(io.LimitReader(pdfFile, 50<<20+1))
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "reading pdf")
+		}
+		if int64(len(pdfBytes)) > 50<<20 {
+			return echo.NewHTTPError(http.StatusRequestEntityTooLarge, "pdf too large (max 50 MB)")
+		}
+
+		figNumStr := c.FormValue("figure")
+		if figNumStr == "" {
+			return echo.NewHTTPError(http.StatusBadRequest, "figure number required")
+		}
+		var figNum int
+		if _, err := fmt.Sscanf(figNumStr, "%d", &figNum); err != nil || figNum < 1 {
+			return echo.NewHTTPError(http.StatusBadRequest, "figure must be a positive integer")
+		}
+
+		result, err := figextract.Extract(c.Request().Context(), geminiClient, cfg.Gemini.Model, pdfBytes, figNum)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadGateway, fmt.Sprintf("extraction error: %v", err))
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"image":    result.PNG,
+			"metadata": result.Metadata,
+		})
 	})
 
 	v1.POST("/synthesize", func(c echo.Context) error {

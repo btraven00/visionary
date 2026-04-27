@@ -1,3 +1,8 @@
+# TODO: rename binary to "visionary" and update .release_url() to point to the
+# new repo/release asset names. Add server and token args to describe_image()
+# (or read from VISIONARY_SERVER / VISIONARY_TOKEN env vars) and drop the
+# direct GEMINI_API_KEY requirement from the caller.
+
 .binary_name <- function() "plsdescribe"
 
 .platform_suffix <- function() {
