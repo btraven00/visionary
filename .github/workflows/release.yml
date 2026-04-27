@@ -27,6 +27,10 @@ jobs:
             cmd: ./cmd/visionary
             goos: darwin
             goarch: arm64
+          - binary: visionary
+            cmd: ./cmd/visionary
+            goos: windows
+            goarch: amd64
           # server: linux only
           - binary: visionary-server
             cmd: ./cmd/visionary-server
@@ -45,6 +49,10 @@ jobs:
             cmd: ./cmd/visionary-crop
             goos: darwin
             goarch: arm64
+          - binary: visionary-crop
+            cmd: ./cmd/visionary-crop
+            goos: windows
+            goarch: amd64
     steps:
       - uses: actions/checkout@v4
 

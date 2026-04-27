@@ -23,10 +23,10 @@ These can also be passed as flags (`-server`, `-token`, `-tts-rate`) or env vars
 ## Usage
 
 ```
-plsdescribe -f plot.png                 # concise one-sentence description
-plsdescribe -f plot.png -v              # detailed bullet points
-plsdescribe -f plot.png -i              # interactive session
-plsdescribe -f plot.png -v -tts         # describe and speak aloud
+visionary -f plot.png                 # concise one-sentence description
+visionary -f plot.png -v              # detailed bullet points
+visionary -f plot.png -i              # interactive session
+visionary -f plot.png -v -tts         # describe and speak aloud
 ```
 
 ### Interactive mode
@@ -34,7 +34,7 @@ plsdescribe -f plot.png -v -tts         # describe and speak aloud
 `-i` opens a session where the image is loaded once and you can ask follow-up questions:
 
 ```
-$ plsdescribe -f umap.png -i
+$ visionary -f umap.png -i
 The UMAP plot shows 21 cell-type clusters distributed across two dimensions...
 
 > how many clusters overlap?
@@ -57,6 +57,29 @@ Commands: `/tts` (speak last response), `/save [file]` (save to file), `/quit`, 
 | `-o` | Output file (default: `description.txt`) |
 | `-tts` | Speak via Google Cloud TTS |
 
+## visionary-crop
+
+Extract a figure from a PDF as a PNG with a JSON metadata sidecar (caption, page, cross-reference mentions):
+
+```
+visionary-crop -pdf paper.pdf -fig 3
+visionary-crop -pdf paper.pdf -fig 3 -o ./figs
+```
+
+Outputs `<stem>-fig<N>.png` and `<stem>-fig<N>.json` in the output directory (default: current directory). The caption and mention count are printed to stdout.
+
+### Flags
+
+| Flag | Description |
+|------|-------------|
+| `-pdf` | PDF file to extract from (required) |
+| `-fig` | Figure number to extract (required) |
+| `-o` | Output directory (default: `.`) |
+| `-server` | Visionary server URL (env: `VISIONARY_SERVER`) |
+| `-token` | Bearer token (env: `VISIONARY_TOKEN`) |
+
+Server and token are read from `~/.visionaryrc` if not set explicitly.
+
 ## TTS
 
 TTS is handled server-side; no local GCP credentials needed. Audio plays through `mpv`, `ffplay`, `afplay` (macOS), or `pw-play`/`paplay` (Linux) — whichever is found first. If none are available, the MP3 is saved to `description.mp3`.
@@ -72,7 +95,7 @@ devtools::install_github("btraven00/visionary")
 The binary is downloaded automatically on first use (with a confirmation prompt).
 
 ```r
-library(plsdescribe)
+library(visionary)
 
 # Describe an image file
 describe_image("umap.png")
